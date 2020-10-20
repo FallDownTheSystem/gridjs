@@ -17,8 +17,8 @@ export interface PaginationConfig {
   limit?: number;
   page?: number;
   summary?: boolean;
-  nextButton?: boolean;
-  prevButton?: boolean;
+  nextPrevButtons?: boolean;
+  firstLastButtons?: boolean;
   buttonsCount?: number;
   resetPageOnUpdate?: boolean;
   server?: {
@@ -37,8 +37,8 @@ export class Pagination extends BaseComponent<
 
   static defaultProps = {
     summary: true,
-    nextButton: true,
-    prevButton: true,
+    nextPrevButtons: true,
+    firstLastButtons: true,
     buttonsCount: 3,
     limit: 10,
     resetPageOnUpdate: true,
@@ -158,21 +158,6 @@ export class Pagination extends BaseComponent<
 
     return (
       <Fragment>
-        {this.pages > maxCount && this.state.page - pagePivot > 0 && (
-          <Fragment>
-            <button
-              tabIndex={0}
-              onClick={this.setPage.bind(this, 0)}
-              title={this._('pagination.firstPage')}
-            >
-              {this._('1')}
-            </button>
-            <button tabIndex={-1} className={className('spread')}>
-              ...
-            </button>
-          </Fragment>
-        )}
-
         {Array.from(Array(maxCount).keys())
           .map((i) => this.state.page + (i - pagePivot))
           .map((i) => (
@@ -187,21 +172,6 @@ export class Pagination extends BaseComponent<
               {this._(`${i + 1}`)}
             </button>
           ))}
-
-        {this.pages > maxCount && this.pages > this.state.page + pagePivot + 1 && (
-          <Fragment>
-            <button tabIndex={-1} className={className('spread')}>
-              ...
-            </button>
-            <button
-              tabIndex={0}
-              onClick={this.setPage.bind(this, this.pages - 1)}
-              title={this._('pagination.page', this.pages)}
-            >
-              {this._(`${this.pages}`)}
-            </button>
-          </Fragment>
-        )}
       </Fragment>
     );
   }
@@ -246,7 +216,7 @@ export class Pagination extends BaseComponent<
         {this.renderSummary()}
 
         <div className={className('pages')}>
-          {this.props.prevButton && (
+          {this.props.nextPrevButtons && (
             <button
               tabIndex={0}
               disabled={this.state.page === 0}
@@ -256,9 +226,29 @@ export class Pagination extends BaseComponent<
             </button>
           )}
 
+          {this.props.firstLastButtons && (
+            <button
+              tabIndex={0}
+              disabled={this.state.page === 0}
+              onClick={this.setPage.bind(this, 0)}
+            >
+              {this._('pagination.first')}
+            </button>
+          )}
+
           {this.renderPages()}
 
-          {this.props.nextButton && (
+          {this.props.firstLastButtons && (
+            <button
+              tabIndex={0}
+              disabled={this.pages === this.state.page + 1 || this.pages === 0}
+              onClick={this.setPage.bind(this, this.pages - 1)}
+            >
+              {this._('pagination.last')}
+            </button>
+          )}
+
+          {this.props.nextPrevButtons && (
             <button
               tabIndex={0}
               disabled={this.pages === this.state.page + 1 || this.pages === 0}

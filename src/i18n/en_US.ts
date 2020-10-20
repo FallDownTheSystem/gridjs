@@ -9,6 +9,8 @@ export default {
   pagination: {
     previous: 'Previous',
     next: 'Next',
+    first: 'First',
+    last: 'Last',
     navigate: (page, pages) => `Page ${page} of ${pages}`,
     page: (page) => `Page ${page}`,
     showing: 'Showing',
